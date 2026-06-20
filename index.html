@@ -1,85 +1,38 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Emergence World</title><style>body{background:#121212;color:#fff;font-family:sans-serif;text-align:center}#map{width:300px;height:300px;background:#1e1e1e;margin:10px auto;position:relative;border:2px solid #333}#start-btn{padding:10px;background:#00ffcc;border:none;cursor:pointer}#logs{width:300px;margin:10px auto;height:200px;overflow-y:auto;text-align:left;font-size:12px;background:#000;padding:5px}</style></Bhai, tumne ekdum sahi baat pakdi. Jab tak hum ye nahi samjhenge ki yeh error **kyun** aa raha hai, tab tak yeh fix nahi hoga. 
-
-Chalo iska post-mortem karte hain:
-
-### 1. `Invalid or unexpected token` ka kya matlab hai?
-Yeh error tab aata hai jab JavaScript code parse (read) karte time browser ko koi aisi cheez milti hai jo coding rules ke khilaf ho. 
-**Tumhare case mein ye kyun ho raha hai:** Tum Android par 'Hope Web' (ya kisi aur mobile editor) mein code likh/test kar rahe ho. Mobile editors mein jab koi code ki line bahut zyada lambi hoti hai (jaise hamara `promptText` wala lamba message), toh editor usko screen par fit karne ke liye **automatically nichi line mein tod deta hai (line break ya word wrap)**. 
-JavaScript mein agar ek string (`" "`) ke andar achanak se line break aa jaye bina proper rules ke, toh wahi ek **"Invalid Token"** ban jata hai aur code wahin crash ho jata hai.
-
-### 2. `startSimulation is not defined` kyun aaya?
-Kyunki code beech mein hi `Invalid token` ki wajah se crash ho gaya, browser ne aage ka code padha hi nahi. Jab usne aage ka padha hi nahi, toh usko pata hi nahi chala ki `startSimulation()` naam ka koi function humne banaya hai. Isliye jab tum button daba rahe ho, toh wo keh raha hai "Bhai, ye function toh mere paas hai hi nahi!"
-
----
-
-### 🔥 Iska 100% Final Fix
-Ab maine us lambi line (`promptText`) ko chote-chote tukdon mein tod kar ek Array mein daal diya hai. Isse tumhara mobile editor isko ajeeb tarike se break nahi karega aur na hi koi "Invalid token" error aayega.
-
-Is naye code ko copy karo aur apni purani file ka **poora text delete karke** isko paste karo:
-
-```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emergence World - Full Simulation</title>
+    <title>Emergence World - Free Model</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        h2 { color: #00ffcc; margin-bottom: 5px; }
-        #map { width: 320px; height: 320px; background: #1e1e1e; border: 3px solid #333; position: relative; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,204,0.2); }
-        .location { position: absolute; padding: 5px; background: rgba(255, 255, 255, 0.1); border: 1px dashed #555; font-size: 11px; text-align: center; border-radius: 4px; }
-        #bank-loc { top: 20px; left: 110px; border-color: #ffd700; color: #ffd700; }
-        #police-loc { bottom: 20px; left: 20px; border-color: #3388ff; color: #3388ff; }
-        #town-loc { bottom: 20px; right: 20px; border-color: #ff33aa; color: #ff33aa; }
-        .agent { position: absolute; width: 25px; height: 25px; font-size: 20px; transition: all 1s ease-in-out; text-align: center; line-height: 25px; }
-        #controls { margin-bottom: 10px; }
-        button { background: #00ffcc; color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-        button:disabled { background: #555; color: #aaa; }
-        #log-container { width: 100%; max-width: 500px; height: 260px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; overflow-y: auto; padding: 10px; box-sizing: border-box; font-size: 13px; line-height: 1.5; }
-        .log-entry { margin-bottom: 8px; border-bottom: 1px solid #222; padding-bottom: 4px; }
-        .mira { color: #ff66cc; } .flora { color: #ff99ff; } .gunda { color: #ff3333; } .police { color: #3399ff; } .guard { color: #00ff66; } .system { color: #ffff00; font-style: italic; }
+        /* same CSS ... (shortened for brevity) */
+        body { font-family: sans-serif; background: #121212; color: #fff; text-align: center; }
+        #map { width: 300px; height: 300px; background: #1e1e1e; margin: 10px auto; border:2px solid #333; position:relative; }
+        .agent { position:absolute; font-size:20px; transition:1s; }
+        #log { width:300px; margin:10px auto; height:200px; overflow-y:auto; background:#000; padding:5px; text-align:left; font-size:12px; }
     </style>
 </head>
 <body>
-
-    <h2>Emergence Mini World</h2>
-    <div style="color: #aaa; font-size: 12px; margin-bottom: 10px;">Powered by OpenRouter Engine (GPT-4o)</div>
-
+    <h2>🌍 Emergence World (Free Model)</h2>
     <div id="map">
-        <div id="bank-loc" class="location">💰 BANK</div>
-        <div id="police-loc" class="location">🚓 Police</div>
-        <div id="town-loc" class="location">🏡 Town</div>
-
-        <div id="mira" class="agent">👩‍⚕️</div>
-        <div id="flora" class="agent">💃</div>
-        <div id="gunda" class="agent">🥷</div>
-        <div id="police" class="agent">👮‍♂️</div>
-        <div id="guard" class="agent">💂‍♂️</div>
+        <div id="mira" class="agent" style="left:230px;top:240px;">👩‍⚕️</div>
+        <div id="flora" class="agent" style="left:260px;top:240px;">💃</div>
+        <div id="gunda" class="agent" style="left:150px;top:150px;">🥷</div>
+        <div id="police" class="agent" style="left:50px;top:220px;">👮</div>
+        <div id="guard" class="agent" style="left:150px;top:70px;">💂</div>
     </div>
-
-    <div id="controls">
-        <button id="start-btn" onclick="startSimulation()">Simulate Next Turn</button>
-    </div>
-
-    <div id="log-container">
-        <div class="log-entry system">सिम्युलेटर तैयार है! 'Simulate Next Turn' बटन दबाएं।</div>
-    </div>
+    <button onclick="simulate()">Simulate</button>
+    <div id="log"></div>
 
     <script>
-        var API_KEY = "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"; 
+        const API_KEY = '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';
+        const MODEL = 'mistralai/mistral-7b-instruct:free';  // ✅ Free & always available
 
-        var worldHistory = [
-            "The simulation starts. Jagga is at the bank. Singham is at the police station. Kalia is roaming. Mira and Flora are in the town square."
-        ];
-
-        var locations = {
+        const locations = {
             bank: { x: 150, y: 40 },
             police_station: { x: 50, y: 240 },
             town_square: { x: 250, y: 240 }
         };
-
-        var agents = {
+        let agents = {
             mira: { x: 230, y: 240 },
             flora: { x: 260, y: 240 },
             gunda: { x: 150, y: 150 },
@@ -87,105 +40,62 @@ Is naye code ko copy karo aur apni purani file ka **poora text delete karke** is
             guard: { x: 150, y: 70 }
         };
 
-        function initMap() {
-            for (var id in agents) {
-                var el = document.getElementById(id);
-                if (el) {
-                    el.style.left = agents[id].x + 'px';
-                    el.style.top = agents[id].y + 'px';
-                }
-            }
-        }
-        initMap();
-
-        function moveAgentToLocation(id, locName) {
-            var loc = locations[locName] || { x: 150, y: 150 };
-            var nx = loc.x + (Math.random() * 40 - 20);
-            var ny = loc.y + (Math.random() * 40 - 20);
-            
+        function moveAgent(id, locName) {
+            let loc = locations[locName] || { x: 150, y: 150 };
+            let nx = loc.x + (Math.random()*40-20);
+            let ny = loc.y + (Math.random()*40-20);
             agents[id].x = Math.max(10, Math.min(290, nx));
             agents[id].y = Math.max(10, Math.min(290, ny));
-
-            var el = document.getElementById(id);
-            if (el) {
-                el.style.left = agents[id].x + 'px';
-                el.style.top = agents[id].y + 'px';
-            }
+            document.getElementById(id).style.left = agents[id].x + 'px';
+            document.getElementById(id).style.top = agents[id].y + 'px';
         }
 
-        async function startSimulation() {
-            var btn = document.getElementById('start-btn');
+        async function simulate() {
+            const btn = document.querySelector('button');
             btn.disabled = true;
-            btn.innerText = "Thinking...";
+            btn.textContent = '⏳ ...';
+            const log = document.getElementById('log');
 
-            var logContainer = document.getElementById('log-container');
-
-            // Maine prompt ko chote parts mein tod diya hai taaki editor ise break na kare
-            var promptParts = [
-                "You are the engine for Emergence World.",
-                "Agents: Mira, Flora, Kalia, Singham, Jagga.",
-                "Locations: bank, police_station, town_square.",
-                "History: " + worldHistory.slice(-2).join(" "),
-                "Give output in ONLY valid JSON format.",
-                "Schema: {\"story\":\"Hindi text\",\"mira_action\":\"text\",\"mira_current_location\":\"bank/police_station/town_square\",\"flora_action\":\"text\",\"flora_current_location\":\"bank/police_station/town_square\",\"gunda_action\":\"text\",\"gunda_current_location\":\"bank/police_station/town_square\",\"police_action\":\"text\",\"police_current_location\":\"bank/police_station/town_square\",\"guard_action\":\"text\",\"guard_current_location\":\"bank/police_station/town_square\"}"
-            ];
-            
-            var promptText = promptParts.join(" ");
+            const prompt = `You are Emergence World. Agents: Mira, Flora, Kalia, Singham, Jagga. Locations: bank, police_station, town_square. History: simulation starts. Return JSON: {"story":"...","mira_action":"...","mira_current_location":"...", ... for flora,gunda,police,guard}. All in Hindi.`;
 
             try {
-                var response = await fetch('[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)', {
+                const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + API_KEY,
-                        'HTTP-Referer': 'https://localhost',
-                        'X-Title': 'Emergence World'
+                        'Authorization': 'Bearer ' + API_KEY
                     },
                     body: JSON.stringify({
-                        model: 'openai/gpt-4o',
-                        messages: [{ role: 'user', content: promptText }]
+                        model: MODEL,
+                        messages: [{ role: 'user', content: prompt }]
                     })
                 });
-
-                if (!response.ok) {
-                    throw new Error("HTTP Error Status: " + response.status);
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(`HTTP ${res.status}: ${errText}`);
                 }
+                const data = await res.json();
+                const raw = data.choices[0].message.content;
+                const result = JSON.parse(raw.trim());
+                log.innerHTML += `<div>📖 ${result.story}</div>`;
+                log.innerHTML += `<div>👩‍⚕️ Mira: ${result.mira_action}</div>`;
+                log.innerHTML += `<div>💃 Flora: ${result.flora_action}</div>`;
+                log.innerHTML += `<div>🥷 Kalia: ${result.gunda_action}</div>`;
+                log.innerHTML += `<div>👮 Singham: ${result.police_action}</div>`;
+                log.innerHTML += `<div>💂 Jagga: ${result.guard_action}</div>`;
+                log.scrollTop = log.scrollHeight;
 
-                var data = await response.json();
-                var rawText = data.choices[0].message.content.trim();
-                
-                if (rawText.startsWith("```json")) {
-                    rawText = rawText.substring(7, rawText.lastIndexOf("```"));
-                } else if (rawText.startsWith("
-```")) {
-                    rawText = rawText.substring(3, rawText.lastIndexOf("```"));
-                }
-                
-                var result = JSON.parse(rawText.trim());
-                worldHistory.push(result.story);
+                moveAgent('mira', result.mira_current_location);
+                moveAgent('flora', result.flora_current_location);
+                moveAgent('gunda', result.gunda_current_location);
+                moveAgent('police', result.police_current_location);
+                moveAgent('guard', result.guard_current_location);
 
-                logContainer.innerHTML += '<div class="log-entry system">⚡ टर्न अपडेट: ' + result.story + '</div>';
-                logContainer.innerHTML += '<div class="log-entry mira"><b>👩‍⚕️ Mira:</b> ' + result.mira_action + '</div>';
-                logContainer.innerHTML += '<div class="log-entry flora"><b>💃 Flora:</b> ' + result.flora_action + '</div>';
-                logContainer.innerHTML += '<div class="log-entry gunda"><b>🥷 Kalia:</b> ' + result.gunda_action + '</div>';
-                logContainer.innerHTML += '<div class="log-entry police"><b>👮‍♂️ Singham:</b> ' + result.police_action + '</div>';
-                logContainer.innerHTML += '<div class="log-entry guard"><b>💂‍♂️ Jagga:</b> ' + result.guard_action + '</div>';
-                
-                logContainer.scrollTop = logContainer.scrollHeight;
-
-                moveAgentToLocation('mira', result.mira_current_location);
-                moveAgentToLocation('flora', result.flora_current_location);
-                moveAgentToLocation('gunda', result.gunda_current_location);
-                moveAgentToLocation('police', result.police_current_location);
-                moveAgentToLocation('guard', result.guard_current_location);
-
-            } catch (error) {
-                console.error(error);
-                logContainer.innerHTML += '<div class="log-entry system" style="color:#ff3333; font-weight:bold;">Error: ' + error.message + '</div>';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Simulate Next Turn";
+            } catch (e) {
+                log.innerHTML += `<div style="color:red;">❌ ${e.message}</div>`;
             }
+            btn.disabled = false;
+            btn.textContent = 'Simulate';
         }
     </script>
 </body>
